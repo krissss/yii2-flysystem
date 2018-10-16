@@ -11,6 +11,8 @@ class Storage extends BaseObject
 {
     public $adapter;
 
+    public $domain;
+
     public $config = [];
 
 
@@ -27,6 +29,24 @@ class Storage extends BaseObject
     public function getAdapter()
     {
         return $this->getFileSystem()->getAdapter();
+    }
+
+    public function getUrl($path)
+    {
+        return $this->normalizeHost($this->domain) . ltrim($path, '/');
+    }
+
+    /**
+     * @param $domain
+     * @return string
+     */
+    protected function normalizeHost($domain)
+    {
+        if (0 !== stripos($domain, 'https://') && 0 !== stripos($domain, 'http://')) {
+            $domain = "http://{$domain}";
+        }
+
+        return rtrim($domain, '/') . '/';
     }
 
     private function getInnerAdapter()
